@@ -2,17 +2,17 @@ var async = require('async');
 var mongoose = require('mongoose');
 require(process.cwd() + '/lib/connection');
 
-var Employee = mongoose.model('Employee');
-var Team = mongoose.model('Team');
+var Student = mongoose.model('Student');
+var Department = mongoose.model('Department');
 
 var data = {
-    employees: [{
+    students: [{
             id: '1000003',
             name: {
-                first: 'Colin',
-                last: 'Ihrig'
+                first: 'Tejumola',
+                last: 'David'
             },
-            image: 'images/employees/1000003.png',
+            image: 'images/students/1000003.png',
             address: {
                 lines: ['11 Wall Street'],
                 city: 'New York',
@@ -52,7 +52,7 @@ var data = {
                 first: 'Aleksey',
                 last: 'Smolenchuk'
             },
-            image: 'images/employees/1000025.png' /* invalid image */ ,
+            image: 'images/students/1000025.png' /* invalid image */ ,
             address: {
                 lines: ['3803 Forbes Ave'],
                 city: 'Pittsburgh',
@@ -87,7 +87,7 @@ var data = {
             }
         }
     ],
-    teams: [{
+    departments: [{
         name: 'Software and Services Group'
     }, {
         name: 'Project Development'
@@ -95,79 +95,79 @@ var data = {
 };
 
 
-var deleteEmployees = function(callback) {
-    console.info('Deleting employees');
-    Employee.remove({}, function(error, response) {
+var deleteStudents = function(callback) {
+    console.info('Deleting students');
+    Student.remove({}, function(error, response) {
         if (error) {
-            console.error('Error deleting employees: ' + error);
+            console.error('Error deleting students: ' + error);
         }
-        console.info('Done deleting employees');
+        console.info('Done deleting students');
         callback();
     });
 };
 
 
-var addEmployees = function(callback) {
-    console.info('Adding employees');
-    Employee.create(data.employees, function(error) {
+var addStudents = function(callback) {
+    console.info('Adding students');
+    Student.create(data.students, function(error) {
         if (error) {
             console.error('Error: ' + error);
         }
-        console.info('Done adding employees');
+        console.info('Done adding students');
         callback();
     });
 };
 
 
-var deleteTeams = function(callback) {
-    console.info('Deleting teams');
-    Team.remove({}, function(error, response) {
+var deleteDepartments = function(callback) {
+    console.info('Deleting departments');
+    Department.remove({}, function(error, response) {
         if (error) {
-            console.error('Error deleting teams: ' + error);
+            console.error('Error deleting departments: ' + error);
         }
-        console.info('Done deleting teams');
+        console.info('Done deleting departments');
         callback();
     });
 };
 
 
-var addTeams = function(callback) {
-    console.info('Adding teams');
-    Team.create(data.teams, function(error, team1) {
+var addDepartments = function(callback) {
+    console.info('Adding departments');
+    Department.create(data.departments, function(error, department1) {
         if (error) {
             console.error('Error: ' + error);
         } else {
-            data.team_id = team1._id;
+            data.department_id = department1._id;
         }
-        console.info('Done adding teams');
+        console.info('Done adding departments');
         callback();
     });
 };
 
 
-var updateEmployeeTeams = function(callback) {
-    console.info('Updating employee teams');
-    var team = data.teams[0];
-    // Set everyone to be on the same team to start
-    Employee.update({}, {
-        team: data.team_id
+var updateStudentDepartments = function(callback) {
+    console.info('Updating student departments');
+    var department = data.departments[0];
+    // Set everyone to be on the same department to start
+    Student.update({}, {
+        department: data.department_id
     }, {
         multi: true
     }, function(error, numberAffected, response) {
         if (error) {
-            console.error('Error updating employe team: ' + error);
+            console.error('Error updating student department: ' + error);
         }
-        console.info('Done updating employee teams');
+        console.info('Done updating student departments');
         callback();
     });
 };
 
 async.series([
-    deleteEmployees,
-    deleteTeams,
-    addEmployees,
-    addTeams,
-    updateEmployeeTeams
+    deleteStudents,
+    deleteDepartments,
+    addStudents,
+    addDepartments,
+    updateStudentDepartments
 ], function(error, results) {
     if (error) {
         console.error('Error: ' + error);

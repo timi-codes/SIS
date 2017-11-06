@@ -1,9 +1,9 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var Team = mongoose.model('Team');
+var Team = mongoose.model('Department');
 var router = express.Router();
 
-router.get('/teams', function(req, res, next) {
+router.get('/departments', function(req, res, next) {
     Team.find().sort('name').exec(function(error, results) {
         if (error) {
             return next(error);
@@ -13,7 +13,7 @@ router.get('/teams', function(req, res, next) {
     });
 });
 
-router.get('/teams/:teamId', function(req, res, next) {
+router.get('/departments/:departmentId', function(req, res, next) {
     Team.findOne({
         _id: req.params.teamId
     }, function(error, results) {

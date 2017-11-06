@@ -1,12 +1,12 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var Employee = mongoose.model('Employee');
-var Team = mongoose.model('Team');
+var Student = mongoose.model('Student');
+var Department = mongoose.model('Department');
 
 var router = express.Router();
 
-router.get('/employees', function(req, res, next) {
-    Employee.find().sort('name.last').exec(function(error, results) {
+router.get('/students', function(req, res, next) {
+    Student.find().sort('name.last').exec(function(error, results) {
         if (error) {
             return next(error);
         }
@@ -15,10 +15,10 @@ router.get('/employees', function(req, res, next) {
     });
 });
 
-router.get('/employees/:employeeId', function(req, res, next) {
-    Employee.findOne({
-        id: req.params.employeeId
-    }).populate('team').exec(function(error, results) {
+router.get('/students/:studentId', function(req, res, next) {
+    Student.findOne({
+        id: req.params.studentId
+    }).populate('department').exec(function(error, results) {
         if (error) {
             return next(error);
         }
@@ -31,13 +31,13 @@ router.get('/employees/:employeeId', function(req, res, next) {
     });
 });
 
-router.put('/employees/:employeeId', function(req, res, next) {
+router.put('/students/:studentId', function(req, res, next) {
     // Remove this or mongoose will throw an error
     // because we would be trying to update the mongo ID
     delete req.body._id;
-    req.body.team = req.body.team._id;
-    Employee.update({
-        id: req.params.employeeId
+    req.body.department = req.body.department._id;
+    Student.update({
+        id: req.params.studentId
     }, req.body, function(err, numberAffected, response) {
         if (err) {
             throw err;
@@ -46,9 +46,9 @@ router.put('/employees/:employeeId', function(req, res, next) {
     });
 });
 
-router.post('/employees', function(req, res, next) {
+router.post('/students', function(req, res, next) {
 
-    var newemployee = new Employee({
+    var newstudent = new Student({
         id: '1000028',
         name: {
             first: req.body.first,
@@ -56,7 +56,7 @@ router.post('/employees', function(req, res, next) {
         }
     });
 
-    newemployee.save(function(error, data) {
+    newstudent.save(function(error, data) {
         if (error) {
             return next(error);
         }
@@ -65,15 +65,15 @@ router.post('/employees', function(req, res, next) {
 
 });
 
-router.delete('/employees/:employeeId', function(req, res, next) {
-    Employee.remove({ 'id': req.params.employeeId }, function(error, data) {
+router.delete('/students/:studentId', function(req, res, next) {
+    Student.remove({ 'id': req.params.studentId }, function(error, data) {
         if (error) {
             return next(error);
         }
         next();
     });
 }, function(req, res, next) {
-    Employee.find().exec(function(error, results) {
+    Student.find().exec(function(error, results) {
         if (error) {
             return next(error);
         }

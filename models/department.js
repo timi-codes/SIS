@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var postFind = require('mongoose-post-find');
 var async = require('async');
 var Schema = mongoose.Schema;
-var TeamSchema = new Schema({
+var DepartmentSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -12,24 +12,24 @@ var TeamSchema = new Schema({
     }
 });
 
-function _attachMembers(Employee, result, callback) {
-    Employee.find({
-        team: result._id
-    }, function(error, employees) {
+function _attachMembers(Student, result, callback) {
+    Student.find({
+        department: result._id
+    }, function(error, students) {
         if (error) {
             return callback(error);
         }
-        result.members = employees;
+        result.members = students;
         callback(null, result);
     });
 }
 
 // listen for find and findOne
-TeamSchema.plugin(postFind, {
+DepartmentSchema.plugin(postFind, {
     find: function(result, callback) {
-        var Employee = mongoose.model('Employee');
+        var Student = mongoose.model('Student');
         async.each(result, function(item, callback) {
-            _attachMembers(Employee, item, callback);
+            _attachMembers(Student, item, callback);
         }, function(error) {
             if (error) {
                 return callback(error);
@@ -38,9 +38,9 @@ TeamSchema.plugin(postFind, {
         });
     },
     findOne: function(result, callback) {
-        var Employee = mongoose.model('Employee');
-        _attachMembers(Employee, result, callback);
+        var Student = mongoose.model('Student');
+        _attachMembers(Student, result, callback);
     }
 });
 
-module.exports = mongoose.model('Team', TeamSchema);
+module.exports = mongoose.model('Department', DepartmentSchema);

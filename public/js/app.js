@@ -9,37 +9,37 @@ app.config(['$routeProvider', function($routeProvider) {
         .when('/', {
             templateUrl: 'home.html'
         })
-        .when('/employees', {
-            templateUrl: 'employees.html',
-            controller: 'EmployeesCtrl'
+        .when('/students', {
+            templateUrl: 'students.html',
+            controller: 'StudentsCtrl'
         })
-        .when('/employees/:employeeId', {
-            templateUrl: 'employee.html',
-            controller: 'EmployeeCtrl'
+        .when('/students/:studentId', {
+            templateUrl: 'student.html',
+            controller: 'StudentCtrl'
         })
-        .when('/teams', {
-            templateUrl: 'teams.html',
-            controller: 'TeamsCtrl'
+        .when('/departments', {
+            templateUrl: 'departments.html',
+            controller: 'DepartmentsCtrl'
         })
-        .when('/teams/:teamId', {
-            templateUrl: 'team.html',
-            controller: 'TeamCtrl'
+        .when('/departments/:departmentId', {
+            templateUrl: 'department.html',
+            controller: 'DepartmentCtrl'
         })
         .otherwise({
             redirectTo: '/'
         });
 }]);
 
-app.factory('EmployeeService', ['$resource', function($resource) {
-    return $resource('/employees/:employeeId', {}, {
+app.factory('StudentService', ['$resource', function($resource) {
+    return $resource('/students/:studentId', {}, {
         update: {
             method: 'PUT'
         }
     });
 }]);
 
-app.factory('TeamService', ['$resource', function($resource) {
-    return $resource('/teams/:teamId');
+app.factory('DepartmentService', ['$resource', function($resource) {
+    return $resource('/departments/:departmentId');
 }]);
 
 app.directive('imageFallback', function() {
@@ -97,34 +97,34 @@ app.directive('imageFallback', function() {
     return exports;
 });
 
-app.controller('EmployeesCtrl', ['$scope', 'EmployeeService', function($scope, service) {
+app.controller('StudentsCtrl', ['$scope', 'StudentService', function($scope, service) {
     service.query(function(data, headers) {
-        $scope.employees = data;
+        $scope.students = data;
     }, _handleError);
 }]);
 
-app.controller('EmployeeCtrl', ['$scope', '$routeParams', 'EmployeeService', 'TeamService', '$q', 'config', '$route',
-    function($scope, $routeParams, employee, team, $q, config, $route) {
+app.controller('StudentCtrl', ['$scope', '$routeParams', 'StudentService', 'DepartmentService', '$q', 'config', '$route',
+    function($scope, $routeParams, student, department, $q, config, $route) {
         $scope.address = {};
 
-        function getTeam(teams, teamId) {
-            for (var i = 0, l = teams.length; i < l; ++i) {
-                var t = teams[i];
-                if (t._id === teamId) {
+        function getDepartment(departments, departmentId) {
+            for (var i = 0, l = departments.length; i < l; ++i) {
+                var t = departments[i];
+                if (t._id === departmentId) {
                     return t;
                 }
             }
         }
 
         $q.all([
-            employee.get({
-                employeeId: $routeParams.employeeId
+            student.get({
+                studentId: $routeParams.studentId
             }).$promise,
-            team.query().$promise
+            department.query().$promise
         ]).then(function(values) {
-            $scope.teams = values[1];
-            $scope.employee = values[0];
-            $scope.employee.team = getTeam($scope.teams, $scope.employee.team._id);
+            $scope.departments = values[1];
+            $scope.student = values[0];
+            $scope.student.department = getDepartment($scope.departments, $scope.student.department._id);
         }).catch(_handleError);
         $scope.editing = false;
         // To prevent multiple references to the same array, give us a new copy of it.
@@ -136,16 +136,16 @@ app.controller('EmployeeCtrl', ['$scope', '$routeParams', 'EmployeeService', 'Te
         $scope.save = function() {
             // To prevent empty lines in the database and keep the UI clean
             // remove any blank lines
-            var lines = $scope.employee.address.lines;
+            var lines = $scope.student.address.lines;
             if (lines.length) {
                 lines = lines.filter(function(value) {
                     return value;
                 });
             }
-            $scope.employee.address.lines = lines;
-            employee.update({
-                employeeId: $routeParams.employeeId
-            }, $scope.employee, function() {
+            $scope.student.address.lines = lines;
+            student.update({
+                studentId: $routeParams.studentId
+            }, $scope.student, function() {
                 $scope.editing = !$scope.editing;
             });
         };
@@ -155,28 +155,28 @@ app.controller('EmployeeCtrl', ['$scope', '$routeParams', 'EmployeeService', 'Te
         }
 
         $scope.address.addLine = function(index) {
-            var lines = $scope.employee.address.lines;
+            var lines = $scope.student.address.lines;
             lines.splice(index + 1, 0, ''); //ADD ITEM TO LIST
         }
 
         $scope.address.removeLine = function(index) {
-            var lines = $scope.employee.address.lines;
+            var lines = $scope.student.address.lines;
             lines.splice(index, 1);
         }
     }
 ]);
 
-app.controller('TeamsCtrl', ['$scope', 'TeamService', function($scope, service) {
+app.controller('DepartmentsCtrl', ['$scope', 'DepartmentService', function($scope, service) {
     service.query(function(data) {
-        $scope.teams = data;
+        $scope.departments = data;
     }, _handleError);
 }]);
 
-app.controller('TeamCtrl', ['$scope', '$routeParams', 'TeamService', function($scope, $routeParams, service) {
+app.controller('DepartmentCtrl', ['$scope', '$routeParams', 'DepartmentService', function($scope, $routeParams, service) {
     service.get({
-        teamId: $routeParams.teamId
+        departmentId: $routeParams.departmentId
     }, function(data, headers) {
-        $scope.team = data;
+        $scope.department = data;
     }, _handleError);
 }]);
 

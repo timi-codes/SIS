@@ -18,7 +18,7 @@ var EmployeeSchema = new Scheme({
     },
     team: {
         type: Scheme.Types.ObjectId,
-        ref: 'Team'
+        ref: 'Department'
     },
     image: {
         type: String,
@@ -40,4 +40,4 @@ var EmployeeSchema = new Scheme({
     }
 });
 
-module.exports = mongoose.model('Employee', EmployeeSchema);
+module.exports = mongoose.model('Student', EmployeeSchema);

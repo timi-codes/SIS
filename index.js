@@ -5,8 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 require('./lib/connection');
-var employees = require('./routes/employees');
-var teams = require('./routes/teams');
+var employees = require('./routes/students');
+var teams = require('./routes/departments');
 var app = express();
 
 // app.use(favicon(__dirname + '/public/favicon.ico'));

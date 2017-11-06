@@ -9,7 +9,7 @@ ul.nav.nav-pills {
     background-color: #fff;
 }
 
-.employee-list-item .panel-body {
+.student-list-item .panel-body {
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -18,17 +18,17 @@ ul.nav.nav-pills {
     display: flex;
 }
 
-.employee-list-item .panel-body>* {
+.student-list-item .panel-body>* {
     -webkit-align-self: center;
     align-self: center;
     -ms-flex-item-align: center;
 }
 
-.employee-list-item .panel-body .btn {
+.student-list-item .panel-body .btn {
     margin-left: auto;
 }
 
-.employee-avatar {
+.student-avatar {
     height: 200px;
     width: 200px;
     border-radius: 6px;
